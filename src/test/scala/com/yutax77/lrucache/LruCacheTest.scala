@@ -8,4 +8,11 @@ class LruCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	def dummy() {
 	  true should be (true)
 	}
+	@Test
+	def testPut() {
+	  val cache:LRUCache = new LRUCache(5)
+	  cache.put("key", "value")
+	}
+	
+	
 }
