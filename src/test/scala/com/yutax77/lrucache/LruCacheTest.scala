@@ -44,5 +44,17 @@ class LruCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	  cache.get("D") should be("D")
 	}
 	
+	@Test
+	def get時に最近アクセスしてないものから消される() = {
+	  val cache = new LRUCache(3)
+	  cache.put("A", "A")
+	  cache.put("B", "B")
+	  cache.put("C", "C")
+	  cache.get("A")
+  	  cache.put("D", "D")
+	  cache.get("A") should be(null)
+	  cache.get("B") should be(null)
+	}
+	
 	
 }
