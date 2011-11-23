@@ -55,6 +55,9 @@ class LRUCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	  cache.get("A") should be(Some("A"))
 	  cache.get("B") should be(None)
 	}
-	
+	@Test(expected=classOf[IllegalArgumentException])
+	def sizeMustBeOverZero():Unit = {
+	  new LRUCache[String, String](0)
+	}
 	
 }
