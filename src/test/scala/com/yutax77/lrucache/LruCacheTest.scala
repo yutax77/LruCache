@@ -18,8 +18,6 @@ class LRUCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	  val cache = new LRUCache[String, String](5)
 	  cache.put("A", "B")
 	  cache.get("") should be (None)
-	  
-	  	  
 	}
 	
 	@Test
@@ -58,6 +56,38 @@ class LRUCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	@Test(expected=classOf[IllegalArgumentException])
 	def sizeMustBeOverZero():Unit = {
 	  new LRUCache[String, String](0)
+	}
+	@Test
+	def 重複するキー対策() = {
+	  val cache = new LRUCache[String, String](3)
+	  cache.put("A", "A1")
+	  cache.put("A", "A2")
+	  cache.put("A", "A3")
+	  cache.put("B","B")
+	  cache.put("C", "C")
+	}
+	@Test
+	def リサイズ() = {
+	  val cache = new LRUCache[String, String](3)
+	  cache.put("A", "A")
+	  cache.put("B", "B")
+	  cache.put("C", "C")
+	  cache.put("D", "D")
+	  cache.get("A") should be (None)
+	  cache.resize(4)
+	  cache.put("E", "E")
+	  cache.get("B") should be (Some("B"))
+	}
+	@Test
+	def 小さくリサイズ() = {
+	  val cache = new LRUCache[String, String](3)
+	  cache.put("A", "A")
+	  cache.put("B", "B")
+	  cache.put("C", "C")
+	  cache.resize(1)
+	  cache.get("B") should be (None)
+	  cache.get("A") should be (None)
+	  cache.get("C") should be (Some("C"))
 	}
 	
 }

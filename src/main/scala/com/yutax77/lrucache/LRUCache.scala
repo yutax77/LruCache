@@ -7,8 +7,9 @@ import scala.collection.mutable.Queue
  * sizeで指定する数だけの要素を保持する.
  * #putでsize以上の要素を追加した場合最も古い要素が削除される。
  */
-class LRUCache[K, V] (size : Int){
-    require(size > 0)//キャッシュのサイズは0より大きくなければいけない
+class LRUCache[K, V] (siz : Int){
+    require(siz > 0)//キャッシュのサイズは0より大きくなければいけない
+    var size = siz
 	val map:Map[K,V] = Map()//キャッシュを管理するマップ
 	var history:List[K] = List.empty[K]//キーを管理するリスト
 
@@ -16,7 +17,8 @@ class LRUCache[K, V] (size : Int){
      * キャッシュに要素を追加する
      */
 	def put (key : K, value : V){
-	  if (history.size >= size) {
+	  history -= key      
+      if (history.size >= size) {
 	    map.remove(history.head)
 	    history = history.tail
 	  }
@@ -29,8 +31,19 @@ class LRUCache[K, V] (size : Int){
      * @return 
      */
 	def get (key : K) : Option[V] = {
-	  history = (history - key) ::: List(key)
-	  map.get(key)
+	  val retVal = map.get(key)
+	  if (retVal.isInstanceOf[Some[V]]) {
+		  history = (history - key) ::: List(key)
+	  }
+	  return retVal
+	}
+	def resize (newSize : Int) = {
+	  require(newSize > 0)
+	  size = newSize
+      while (history.size > size) {
+	    map.remove(history.head)
+	    history = history.tail
+	  }
 	}
 
 }
