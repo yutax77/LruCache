@@ -90,4 +90,25 @@ class LRUCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	  cache.get("C") should be (Some("C"))
 	}
 	
+	@Test
+	def 一定時間経つと取得できない() = {
+	  val cache = new LRUCache[String, String](3,2000)
+	  cache.put("A", "a")
+	  Thread.sleep(2000);
+	  //2秒経過したので取得できない
+	  cache.get("A") should be (None)
+	}
+	
+	@Test
+	def 時間経過する前にgetするとアクセス時間が更新される() = {
+	  val cache = new LRUCache[String, String](3,2000)
+	  cache.put("A", "A")
+	  Thread.sleep(1000)
+	  cache.get("A")
+	  Thread.sleep(1000)
+	  cache.get("A") should be (Some("A"))
+	  Thread.sleep(2000)
+	  cache.get("A") should be (None)	  
+	}
+	
 }
