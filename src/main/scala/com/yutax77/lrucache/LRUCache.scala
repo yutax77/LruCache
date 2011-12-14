@@ -48,7 +48,9 @@ class LRUCache[K, V] (siz : Int, tim : Int){
 	      map.remove(key)
 	      history -= key
 	    }
-	    case Some(t) => {}
+	    case Some(t) => {
+	      timerMap.put(key, Calendar.getInstance())
+	    }
 	    case None =>{}
 	  }
 	  val retVal = map.get(key)

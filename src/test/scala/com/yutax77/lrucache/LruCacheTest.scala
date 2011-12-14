@@ -2,6 +2,7 @@ package com.yutax77.lrucache
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
+import java.util.concurrent.Executors
 
 class LRUCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	@Test
@@ -110,5 +111,22 @@ class LRUCacheTest extends JUnitSuite with ShouldMatchersForJUnit {
 	  Thread.sleep(2000)
 	  cache.get("A") should be (None)	  
 	}
+	
+    @Test
+    def 複数スレッドでputしても全部正しく入る() {
+		val cache = new LRUCache[Int, Int](100, 60000)
+		val getRunFunc = (start: Int) =>  {
+			new Runnable {
+				def run() {
+					for(i <- start to start + 50)
+						cache.put(i, i)
+				}
+			}
+		}
+		val execService = Executors.newFixedThreadPool(2)
+		execService.execute(getRunFunc(0))
+		execService.execute(getRunFunc(51))
+		//TODO 2つのスレッドの終了を待ってチェックを開始する
+    }
 	
 }
